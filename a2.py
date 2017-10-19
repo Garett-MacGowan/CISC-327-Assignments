@@ -1,4 +1,4 @@
-import sys
+import sys, os
 # Authors:
 # Garett MacGowan: 10197107
 # Areege Chaudhary: 10197607
@@ -20,9 +20,10 @@ def main():
 	while sessionType == None:
 		sessionType = login()
 		# Eventually this will be pulled from the backend.
-		validAccountsList = readAccounts(sys.argv[1])
+		validAccountsList = readAccounts(os.path.join(sys.path[0], sys.argv[1]))
 		# Reads transaction summary file into easy-to-use list (necessary for implementing certain transaction constraints).
-		transactionSummaryFile = readTransactionSummaryFile(sys.argv[2]) 
+		transactionSummaryFile = readTransactionSummaryFile(os.path.join(sys.path[0], sys.argv[2]))
+		sessionTransactionSummaryFile = []
 		# When the session type has been selected, allow for transaction requests.
 		while (sessionType != None):
 			transaction = input("Please enter a transaction code: ")
@@ -31,32 +32,35 @@ def main():
 					print("Sorry, this transaction is unauthorized.")
 				else:
 					# Appends necessary information to transaction summary file.
-					transactionSummaryFile.append(createacct(validAccountsList))
+					sessionTransactionSummaryFile.append(createacct(validAccountsList))
 			if (transaction == "deleteacct"):
 				if (sessionType == "machine"):
 					print("Sorry, this transaction is unauthorized.")
 				else:
-					transactionSummaryFile.append(deleteacct(validAccountsList))
+					sessionTransactionSummaryFile.append(deleteacct(validAccountsList))
 			if (transaction == "deposit"):
-				transactionSummaryFile.append(deposit(sessionType,validAccountsList))
+				sessionTransactionSummaryFile.append(deposit(sessionType, validAccountsList))
 			if (transaction == "withdraw"):
-				transactionSummaryFile.append(withdraw(sessionType,validAccountsList))
+				# Passing sessionTransactionSummaryFile to limit withdraw amount per machine session.
+				sessionTransactionSummaryFile.append(withdraw(sessionType, validAccountsList, sessionTransactionSummaryFile))
 			if (transaction == "transfer"):
-				transactionSummaryFile.append(transfer(sessionType,validAccountsList))
+				sessionTransactionSummaryFile.append(transfer(sessionType, validAccountsList))
 			if (transaction == "logout"):
+				transactionSummaryFile = transactionSummaryFile + sessionTransactionSummaryFile
 				# Passes the session transaction summary file to the logout function to be written to the daily transaction summary file.
-				logout(transactionSummaryFile, sys.argv[2])
+				print(transactionSummaryFile)
+				logout(transactionSummaryFile, os.path.join(sys.path[0], sys.argv[2]))
 				sessionType = None
 
 # readAccounts handles the reading of the valid accounts file to memory so that it may be used by certain transactions to work within constraints.
 # readAccounts returns a list containing all of the valid account numbers.
-def readAccounts(fileName):
+def readAccounts(filePath):
 	validAccountsList = []
 	# Try/catch handles errors in reading files.
 	try:
-		file = open(fileName, "r")
+		file = open(filePath, 'r')
 	except IOError:
-		print("Cannot open " + fileName)
+		print("Cannot open " + filePath)
 	else:
 		for line in file:
 			# Detects faulty accounts file.
@@ -68,21 +72,25 @@ def readAccounts(fileName):
 				print("Invalid accounts list!")
 				print("Contact an administrator to fix backend accounts list creation!")
 				quit()
-			validAccountsList.append(line)
+			currentLine = line.strip('\n')
+			validAccountsList.append(currentLine)
+	file.close()
 	return validAccountsList
 
 # readTransactionSummaryFile handles reading the transaction summary file into memory so that it may be used by certain transactions to work within constraints.
 # readTransactionSummaryFile returns a list containing all of the transactions for the day.
-def readTransactionSummaryFile(fileName):
+def readTransactionSummaryFile(filePath):
 	transactionSummaryFile = []
 	try:
-		file = open(fileName, "r")
+		file = open(filePath, 'r')
 	except IOError:
-		print("Cannot open " + fileName)
+		print("Cannot open " + filePath)
 	else:
 		for line in file:
-			transactionSummaryFile.append(line)
-	return validAccountsList
+			currentLine = line.strip('\n')
+			transactionSummaryFile.append(currentLine)
+	file.close()
+	return transactionSummaryFile
 
 # This function prompts the user to start the session by entering 'login'. At this point, no other input
 # but log in should be accepted. Once the user has successfully logged in, the function prompts the user
@@ -113,22 +121,24 @@ def createacct(accountsFile):
 		number = input("Enter a new account number: ")
 		if (str(number[0]) == "0"): 
 			print("The account number cannot start with 0.")
-		if (len(number) != 7): 
+		elif (len(number) != 7): 
 			print("Make sure that the account number is composed of 7 digits.")
-		for line in accountsFile: # Check to see if number is already in the account file.
-			if (line == number):
-				print("That account number is already in use!")
 		else:
+			for line in accountsFile: # Check to see if number is already in the account file.
+				if (line == number):
+					print("That account number is already in use!")
+					continue
 			check1 = True
+			
 	# Does not add to transaction summary file until a valid name is recieved.
 	while (check2 == False):
 		name = input("Enter a name for the account: ")
 		if (((len(name)) < 3) or ((len(name)) > 30)):
 			print("The name has to be between 3 and 30 alphanumeric characters.")
-		if (((str(name))[0] == " ") or ((str(name))[(len(name)-1)] == " ")):
-				print("The name cannot begin or end with a space")
+		elif (((str(name))[0] == " ") or ((str(name))[(len(name)-1)] == " ")):
+			print("The name cannot begin or end with a space")
 		else:
-				check2 = True
+			check2 = True
 	# Create a string for a line in the transaction summary file.
 	transactionLine = "NEW " + number + " " + name
 	return transactionLine
@@ -158,29 +168,46 @@ def deposit(sessionType, accountsFile):
 	check2 = False
 	# Does not advance to next input until a valid input is recieved.
 	while (check1 == False):
-		number = input("Enter the account number that you would like to deposit from: ")
+		number = input("Enter the account number that you would like to deposit to: ")
 		for line in accountsFile: # Check that the account number is in the account file.
-				if (line == number):
-					check1 = True
+			if (line == number):
+				check1 = True
 		if (check1 == False):
 			print("Cannot find that account in our system.")
 	# Does not advance to adding to transaction summary file until a valid input is recieved.
 	while (check2 == False):
 		amount = input("Enter the amount that you would like to deposit in cents: ")
-		if ((sessionType == "machine") and (amount > 100000)):
+		if ((sessionType == "machine") and (int(amount) > 100000)):
 			print("Depositing more than $1000 is not authorized in ATM mode.")
-		if ((sessionType == "agent") and (amount > 99999999)):
+		elif ((sessionType == "agent") and (int(amount) > 99999999)):
 			print("Depositing more than $999,999.99 is not authorized.")
 		else:
-				check2 = True
+			check2 = True
 	# Create a string for a line in the transaction summary file.
 	transactionLine = "DEP " + number + " " + amount
 	return transactionLine
 
+# checkSessionLimit checks to make sure that no more than $1000 has been withdrawn from a particular account during the
+# current session. This function is used in the withdraw function when in ATM mode. If over $1000 has been withrawn from
+# the account in the current session, the function returns False, otherwise, it returns True.
+def checkSessionLimit(accountNumber, amount, sessionTransactionSummaryFile):
+	withdrawnSum = 0
+	for element in sessionTransactionSummaryFile:
+		#Parse the line in the sessionTransactionSummary file into a list.
+		currentElement = element.split(" ")
+		# take the sum of the withdrawls for the given account number.
+		if ((currentElement[0] == "WDR") and (currentElement[1] == accountNumber)):
+			withdrawnSum += int(currentElement[2])
+	# If the sum of the session withdrawls plus the requested withrawl amount exceeds 1000, return False.
+	if ((withdrawnSum + amount) > 100000):
+		return False
+	else:
+		return True
+
 # This function asks for an account number to withdraw from and checks to see if it is valid (its in the account file). It 
 # then asks for an amount to withdraw (in cents). After checking to see if that amount is valid (not more than $1000 in 
 # ATM mode and not more than $999,999.99 in agent mode), it adds a line to the transaction summary file.
-def withdraw(sessionType, accountsFile):
+def withdraw(sessionType, accountsFile, sessionTransactionSummaryFile):
 	check1 = False
 	check2 = False
 	# Does not advance to next input prompt until a valid input is recieved.
@@ -188,19 +215,22 @@ def withdraw(sessionType, accountsFile):
 		number = input("Enter the account number that you would like to withdraw from: ")
 		# Check that the account number is in the account file.
 		for line in accountsFile:
-				if (line == number):
-					check1 = True
+			if (line == number):
+				check1 = True
 		if (check1 == False):
 			print("Cannot find that account in our system.")
 	# Does not advance to writing in transaction summary file until a valid input is recieved.
 	while (check2 == False):
 		amount = input("Enter the amount that you would like to withdraw in cents: ")
-		if ((sessionType == "machine") and (amount > 100000)):
+		if ((sessionType == "machine") and (int(amount) > 100000)):
 			print("Withdrawing more than $1000 is not authorized in ATM mode.")
-		if ((sessionType == "agent") and (amount > 99999999)):
+		elif ((sessionType == "agent") and (int(amount) > 99999999)):
 			print("Withdrawing more than $999,999.99 is not authorized.")
+		elif ((sessionType == "machine") and (checkSessionLimit(number, int(amount), sessionTransactionSummaryFile) == False)):
+			print("You may not withdraw more than $1000 per ATM session.")
+			continue
 		else:
-				check2 = True
+			check2 = True
 	# Create a string for a line in the transaction summary file.
 	transactionLine = "WDR " + number + " " + amount
 	return transactionLine
@@ -219,7 +249,7 @@ def transfer(sessionType, accountsFile):
 			if (line == number1):
 				check1 = True
 		if (check1 == False):
-				print("Cannot find that account in our system.")
+			print("Cannot find that account in our system.")
 	# Does not advance to next input prompt until a valid account number is recieved.
 	while (check2 == False):
 		number2 = input("Enter the account number that you would like to transfer to: ")
@@ -227,28 +257,32 @@ def transfer(sessionType, accountsFile):
 			if (line == number2):
 				check2 = True
 		if (check2 == False):
-				print("Cannot find that account in our system.")
+			print("Cannot find that account in our system.")
 	# Does not add to transaction summary file until a valid amount value is recieved.
 	while (check3 == False):
 		amount = input("Enter the amount that you would like to transfer (in cents): ")
-		if ((sessionType == "machine") and (amount > 100000)):
+		if ((sessionType == "machine") and (int(amount) > 100000)):
 			print("Transferring more than $1000 is not authorized in ATM mode.")
-		if ((sessionType == "agent") and (amount > 99999999)):
+		elif ((sessionType == "agent") and (int(amount) > 99999999)):
 			print("Transferring more than $999,999.99 is not authorized.")
 		else:
-				check3 = True
+			check3 = True
 	# Create a string for a line in the transaction summary file.
 	transactionLine = "XFR " + number1 + " " + amount + " " + number2
 	return transactionLine
 
 # logout handles writing the new daily transaction summary file so that it may be used by the backend.
-def logout(transactionSummaryFile, fileName):
+def logout(transactionSummaryFile, filePath):
 	try:
-		file = open(fileName, "w")
+		file = open(filePath, 'w')
 	except IOError:
-		print("Cannot open " + fileName)
+		print("Cannot open " + filePath)
 	else:
-		for element in transactionSummaryFile:
-			file.write(element + '\n')
+		if (len(transactionSummaryFile) == 0):
+			return
+		else:
+			for index in range(0, len(transactionSummaryFile)):
+				file.write(transactionSummaryFile[index] + '\n')
+	file.close()
 
 main()
