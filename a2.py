@@ -26,7 +26,7 @@ def main():
 		sessionTransactionSummaryFile = []
 		# When the session type has been selected, allow for transaction requests.
 		while (sessionType != None):
-			transaction = input("Please enter a transaction code: ")
+			transaction = input("Please enter a transaction code:")
 			if (transaction == "createacct"):
 				if (sessionType == "machine"):
 					print("Sorry, this transaction is unauthorized.")
@@ -51,6 +51,8 @@ def main():
 				print(transactionSummaryFile)
 				logout(transactionSummaryFile, os.path.join(sys.path[0], sys.argv[2]))
 				sessionType = None
+			else:
+				print("Not a valid transaction code. Please try again:")
 
 # readAccounts handles the reading of the valid accounts file to memory so that it may be used by certain transactions to work within constraints.
 # readAccounts returns a list containing all of the valid account numbers.
@@ -118,7 +120,7 @@ def createacct(accountsFile):
 	check2 = False
 	while (check1 == False):
 		# Does not advance to next input prompt until a valid account number is recieved.
-		number = input("Enter a new account number: ")
+		number = input("Enter a new account number:")
 		if (str(number[0]) == "0"): 
 			print("The account number cannot start with 0.")
 		elif (len(number) != 7): 
@@ -132,11 +134,11 @@ def createacct(accountsFile):
 			
 	# Does not add to transaction summary file until a valid name is recieved.
 	while (check2 == False):
-		name = input("Enter a name for the account: ")
+		name = input("Enter a name for the account:")
 		if (((len(name)) < 3) or ((len(name)) > 30)):
-			print("The name has to be between 3 and 30 alphanumeric characters.")
+			print("t")
 		elif (((str(name))[0] == " ") or ((str(name))[(len(name)-1)] == " ")):
-			print("The name cannot begin or end with a space")
+			print("The name cannot begin or end with a space.")
 		else:
 			check2 = True
 	# Create a string for a line in the transaction summary file.
@@ -149,13 +151,13 @@ def deleteacct(accountsFile):
 	check1 = False
 	# Does not advance to next input prompt until a valid account number is recieved.
 	while (check1 == False):
-		number = input("Enter the account number to be deleted: ")
+		number = input("Enter the account number to be deleted:")
 		for line in accountsFile:
 			if (line == number):
 				check1 = True
 		if (check1 == False):
 			print("Cannot find that account in our system.")
-	name = input("Enter the name of the account: ")
+	name = input("Enter the name of the account:")
 	# Create a string for a line in the transaction summary file.
 	transactionLine = "DEL " + number + " " + name
 	return transactionLine
@@ -168,7 +170,7 @@ def deposit(sessionType, accountsFile):
 	check2 = False
 	# Does not advance to next input until a valid input is recieved.
 	while (check1 == False):
-		number = input("Enter the account number that you would like to deposit to: ")
+		number = input("Enter the account number that you would like to deposit to:")
 		for line in accountsFile: # Check that the account number is in the account file.
 			if (line == number):
 				check1 = True
@@ -176,7 +178,7 @@ def deposit(sessionType, accountsFile):
 			print("Cannot find that account in our system.")
 	# Does not advance to adding to transaction summary file until a valid input is recieved.
 	while (check2 == False):
-		amount = input("Enter the amount that you would like to deposit in cents: ")
+		amount = input("Enter the amount that you would like to deposit in cents:")
 		if ((sessionType == "machine") and (int(amount) > 100000)):
 			print("Depositing more than $1000 is not authorized in ATM mode.")
 		elif ((sessionType == "agent") and (int(amount) > 99999999)):
@@ -212,7 +214,7 @@ def withdraw(sessionType, accountsFile, sessionTransactionSummaryFile):
 	check2 = False
 	# Does not advance to next input prompt until a valid input is recieved.
 	while (check1 == False):
-		number = input("Enter the account number that you would like to withdraw from: ")
+		number = input("Enter the account number that you would like to withdraw from:")
 		# Check that the account number is in the account file.
 		for line in accountsFile:
 			if (line == number):
@@ -221,7 +223,7 @@ def withdraw(sessionType, accountsFile, sessionTransactionSummaryFile):
 			print("Cannot find that account in our system.")
 	# Does not advance to writing in transaction summary file until a valid input is recieved.
 	while (check2 == False):
-		amount = input("Enter the amount that you would like to withdraw in cents: ")
+		amount = input("Enter the amount that you would like to withdraw in cents:")
 		if ((sessionType == "machine") and (int(amount) > 100000)):
 			print("Withdrawing more than $1000 is not authorized in ATM mode.")
 		elif ((sessionType == "agent") and (int(amount) > 99999999)):
@@ -244,7 +246,7 @@ def transfer(sessionType, accountsFile):
 	check3 = False
 	# Does not advance to next input prompt until a valid account number is recieved.
 	while (check1 == False):
-		number1 = input("Enter the account number that you would like to transfer from: ")
+		number1 = input("Enter the account number that you would like to transfer from:")
 		for line in accountsFile:
 			if (line == number1):
 				check1 = True
@@ -252,7 +254,7 @@ def transfer(sessionType, accountsFile):
 			print("Cannot find that account in our system.")
 	# Does not advance to next input prompt until a valid account number is recieved.
 	while (check2 == False):
-		number2 = input("Enter the account number that you would like to transfer to: ")
+		number2 = input("Enter the account number that you would like to transfer to:")
 		for line in accountsFile:
 			if (line == number2):
 				check2 = True
@@ -260,7 +262,7 @@ def transfer(sessionType, accountsFile):
 			print("Cannot find that account in our system.")
 	# Does not add to transaction summary file until a valid amount value is recieved.
 	while (check3 == False):
-		amount = input("Enter the amount that you would like to transfer (in cents): ")
+		amount = input("Enter the amount that you would like to transfer (in cents):")
 		if ((sessionType == "machine") and (int(amount) > 100000)):
 			print("Transferring more than $1000 is not authorized in ATM mode.")
 		elif ((sessionType == "agent") and (int(amount) > 99999999)):
