@@ -1,0 +1,7 @@
+Enter 'login' to login:
+What type of session would you like?
+Please enter a transaction code:
+Enter the account number that you would like to withdraw from:
+Enter the amount that you would like to withdraw in cents:
+Withdrawing more than $1000 is not authorized in ATM mode.
+Enter the amount that you would like to withdraw in cents:

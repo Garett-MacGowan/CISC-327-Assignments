@@ -1,0 +1,6 @@
+login
+machine
+transfer
+1234567
+1235678
+100100

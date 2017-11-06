@@ -1,0 +1,5 @@
+Enter 'login' to login:
+What type of session would you like?
+Please enter a transaction code:
+Sorry, this transaction is unauthorized.
+Please enter a transaction code:

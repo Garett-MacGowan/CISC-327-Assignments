@@ -1,0 +1,6 @@
+Enter 'login' to login:
+What type of session would you like?
+Please enter a transaction code:
+Enter a new account number:
+Make sure that the account number is composed of 7 digits.
+Enter a new account number:

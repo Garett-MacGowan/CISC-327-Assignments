@@ -1,0 +1,6 @@
+Enter 'login' to login:
+What type of session would you like?
+Please enter a transaction code:
+Enter a new account number:
+The account number cannot start with 0.
+Enter a new account number:

@@ -1,0 +1,7 @@
+Enter 'login' to login:
+What type of session would you like?
+Please enter a transaction code:
+Enter a new account number:
+Enter a name for the account:
+The name must be made up of alphanumeric characters only.
+Enter a name for the account:

@@ -1,0 +1,5 @@
+Enter 'login' to login:
+What type of session would you like?
+Please enter a transaction code:
+Enter 'login' to login:
+Please log in:

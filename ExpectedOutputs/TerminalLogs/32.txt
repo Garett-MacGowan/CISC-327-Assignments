@@ -1,0 +1,6 @@
+Enter 'login' to login:
+What type of session would you like?
+Please enter a transaction code:
+Enter a new account number:
+That account number is already in use!
+Enter a new account number:

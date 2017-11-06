@@ -1,0 +1,6 @@
+1. Read input file one line at a time to use as input in program
+2. As the program prints out statements to the terminal, append those lines to the corresponding output terminal log in ExpectedOutputs -> TerminalLog
+3. Route any output files to the OutputFiles directory, naming them ‘#’ (corresponding to test case)
+4. Compare each line in expected terminal log and actual terminal log
+5. Compare the outputted files
+6. done!

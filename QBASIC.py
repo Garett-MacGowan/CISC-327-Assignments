@@ -33,22 +33,22 @@ def main():
 				else:
 					# Appends necessary information to transaction summary file.
 					sessionTransactionSummaryFile.append(createacct(validAccountsList))
-			if (transaction == "deleteacct"):
+			elif (transaction == "deleteacct"):
 				if (sessionType == "machine"):
 					print("Sorry, this transaction is unauthorized.")
 				else:
 					sessionTransactionSummaryFile.append(deleteacct(validAccountsList))
-			if (transaction == "deposit"):
+			elif (transaction == "deposit"):
 				sessionTransactionSummaryFile.append(deposit(sessionType, validAccountsList))
-			if (transaction == "withdraw"):
+			elif (transaction == "withdraw"):
 				# Passing sessionTransactionSummaryFile to limit withdraw amount per machine session.
 				sessionTransactionSummaryFile.append(withdraw(sessionType, validAccountsList, sessionTransactionSummaryFile))
-			if (transaction == "transfer"):
+			elif (transaction == "transfer"):
 				sessionTransactionSummaryFile.append(transfer(sessionType, validAccountsList))
-			if (transaction == "logout"):
+			elif (transaction == "logout"):
 				transactionSummaryFile = transactionSummaryFile + sessionTransactionSummaryFile
 				# Passes the session transaction summary file to the logout function to be written to the daily transaction summary file.
-				print(transactionSummaryFile)
+				# print(transactionSummaryFile)
 				logout(transactionSummaryFile, os.path.join(sys.path[0], sys.argv[2]))
 				sessionType = None
 			else:
@@ -125,6 +125,8 @@ def createacct(accountsFile):
 			print("The account number cannot start with 0.")
 		elif (len(number) != 7): 
 			print("Make sure that the account number is composed of 7 digits.")
+		elif (number.isdigit() == False):
+                        print("The account number must be made up of digits.")
 		else:
 			for line in accountsFile: # Check to see if number is already in the account file.
 				if (line == number):
@@ -139,6 +141,8 @@ def createacct(accountsFile):
 			print("t")
 		elif (((str(name))[0] == " ") or ((str(name))[(len(name)-1)] == " ")):
 			print("The name cannot begin or end with a space.")
+		elif (name.isalnum() == False):
+                        print("The name must be made up of alphanumeric characters only.")
 		else:
 			check2 = True
 	# Create a string for a line in the transaction summary file.

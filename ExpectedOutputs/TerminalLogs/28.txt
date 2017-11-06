@@ -1,0 +1,9 @@
+Enter 'login' to login:
+What type of session would you like?
+Please enter a transaction code:
+Enter a new account number:
+Enter a name for the account:
+Please enter a transaction code:
+Enter the account number that you would like to deposit to:
+Cannot find that account in our system.
+Enter the account number that you would like to deposit to:

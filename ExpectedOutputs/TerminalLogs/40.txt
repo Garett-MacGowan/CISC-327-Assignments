@@ -1,0 +1,7 @@
+Enter 'login' to login:
+What type of session would you like?
+Please enter a transaction code:
+Enter the account number to be deleted:
+Enter the name of the account:
+Please enter a transaction code:
+Enter 'login' to login:
