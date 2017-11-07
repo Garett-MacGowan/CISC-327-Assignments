@@ -66,15 +66,15 @@ def readAccounts(filePath):
 	else:
 		for line in file:
 			# Detects faulty accounts file.
-			if (line[0] == 0):
-				print("Invalid accounts list!")
-				print("Contact an administrator to fix backend accounts list creation!")
-				quit()
-			if (len(line) != 7):
-				print("Invalid accounts list!")
-				print("Contact an administrator to fix backend accounts list creation!")
-				quit()
 			currentLine = line.strip('\n')
+			if (currentLine[0] == 0):
+				print("Invalid accounts list!")
+				print("Contact an administrator to fix backend accounts list creation!")
+				quit()
+			if (len(currentLine) != 7):
+				print("Invalid accounts list!")
+				print("Contact an administrator to fix backend accounts list creation!")
+				quit()
 			validAccountsList.append(currentLine)
 	file.close()
 	return validAccountsList
@@ -126,7 +126,7 @@ def createacct(accountsFile):
 		elif (len(number) != 7): 
 			print("Make sure that the account number is composed of 7 digits.")
 		elif (number.isdigit() == False):
-                        print("The account number must be made up of digits.")
+			print("The account number must be made up of digits.")
 		else:
 			for line in accountsFile: # Check to see if number is already in the account file.
 				if (line == number):
@@ -142,7 +142,7 @@ def createacct(accountsFile):
 		elif (((str(name))[0] == " ") or ((str(name))[(len(name)-1)] == " ")):
 			print("The name cannot begin or end with a space.")
 		elif (name.isalnum() == False):
-                        print("The name must be made up of alphanumeric characters only.")
+			print("The name must be made up of alphanumeric characters only.")
 		else:
 			check2 = True
 	# Create a string for a line in the transaction summary file.
@@ -175,6 +175,9 @@ def deposit(sessionType, accountsFile):
 	# Does not advance to next input until a valid input is recieved.
 	while (check1 == False):
 		number = input("Enter the account number that you would like to deposit to:")
+		if (number == "0000000"):
+			print("Cannot deposit to the special account number.")
+			continue
 		for line in accountsFile: # Check that the account number is in the account file.
 			if (line == number):
 				check1 = True
@@ -285,7 +288,7 @@ def logout(transactionSummaryFile, filePath):
 		print("Cannot open " + filePath)
 	else:
 		if (len(transactionSummaryFile) == 0):
-			return
+			file.write('')
 		else:
 			for index in range(0, len(transactionSummaryFile)):
 				file.write(transactionSummaryFile[index] + '\n')
