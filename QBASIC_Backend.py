@@ -98,11 +98,15 @@ def transferHandler(masterAccounts, accountNumOne, amount, accountNumTwo):
 # number is not already existing, the new account is inserted in ascending order in the master accounts list.
 def newAccHandler(masterAccounts, accountNum, accountName):
     # Checking if account number is already in use.
-    for index in range(0, len(masterAccounts)):
-        if (masterAccounts[index][0] == accountNum):
-            print("Cannot create account " + accountNum + ". It has already been taken.")
-            return masterAccounts
+    if (len(masterAccounts) != 0):
+        for index in range(0, len(masterAccounts)):
+            if (masterAccounts[index][0] == accountNum):
+                print("Cannot create account " + accountNum + ". It has already been taken.")
+                return masterAccounts
     # Inserting new account in sorted order.
+    if (len(masterAccounts) == 0):
+            masterAccounts.append([accountNum, "0", accountName])
+            return masterAccounts
     for index in range(0, len(masterAccounts)):
         if (int(masterAccounts[index][0]) > int(accountNum)):
             masterAccounts.insert(index-1, [accountNum, "0", accountName])
