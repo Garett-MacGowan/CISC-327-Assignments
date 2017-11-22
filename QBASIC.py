@@ -7,9 +7,9 @@ import sys, os
 
 # This program is a simple command line driven bank simulatior. The available functinality are logging in as machine or agent, creating acounts, deleting accounts,
 # depositing, withdrawing, transfering funds, and logging out. This submission contains only front end work, and thus only some of the systems funcionality is live.
-# The program is intended to be run from console, calling "python a2.py validAccounts.txt transactionSummary.txt" where both .txt's are in the directory of a2.py.
-# The program takes validAccounts.txt as an input, as well as transactionSummary.txt (the daily transaction summary file), to be updated with any transactions that
-# occur during the session. transactionSummary.txt is the only output of the front-end.
+# The program is intended to be run from console, calling "python QBASIC.py validAccounts.txt transactionSummary.txt" where both .txt's are in the directory or a
+# subdirectory of QBASIC.py. The program takes validAccounts.txt as an input, as well as transactionSummary.txt (the daily transaction summary file), to be updated
+# with any transactions that occur during the session. transactionSummary.txt is the only output of the front-end.
 
 # Main handles all calls to the transactions of the banking system. It ensures proper execution of the login and logout functios, while also allowing account transactions
 # to take place when logged in. It also manages loading the valid accounts list and transaction summary file into memory for use in the session.
@@ -46,7 +46,7 @@ def main():
 			elif (transaction == "transfer"):
 				sessionTransactionSummaryFile.append(transfer(sessionType, validAccountsList))
 			elif (transaction == "logout"):
-				transactionSummaryFile = transactionSummaryFile + sessionTransactionSummaryFile
+				transactionSummaryFile = transactionSummaryFile + sessionTransactionSummaryFile + ["EOS"]
 				# Passes the session transaction summary file to the logout function to be written to the daily transaction summary file.
 				# print(transactionSummaryFile)
 				logout(transactionSummaryFile, os.path.join(sys.path[0], sys.argv[2]))
