@@ -142,11 +142,15 @@ def writeMasterAccounts(masterAccounts, filePath):
     else:
         if (len(masterAccounts) == 0):
             file.write('')
+        elif (len(masterAccounts) == 1):
+            currentAccount = ' '.join(masterAccounts[0])
+            file.write(currentAccount)
         else:
+            lastIndex = len(masterAccounts)-1
             for index in range(0, len(masterAccounts)-1):
                 currentAccount = ' '.join(masterAccounts[index])
                 file.write(currentAccount + '\n')
-            currentAccount = ' '.join(masterAccounts[index+1])
+            currentAccount = ' '.join(masterAccounts[lastIndex])
             file.write(currentAccount)
     file.close()
 
