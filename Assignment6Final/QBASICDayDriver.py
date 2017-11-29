@@ -1,12 +1,20 @@
 import os, sys
 
 def main():
-    os.system('python QBASIC.py validAccounts.txt transactionSummary/transactionSummary0.txt')
-    os.system('python QBASIC.py validAccounts.txt transactionSummary/transactionSummary1.txt')
-    os.system('python QBASIC.py validAccounts.txt transactionSummary/transactionSummary2.txt')
+    os.system('start cmd /K python QBASIC.py validAccounts.txt transactionSummary/transactionSummary0.txt')
+    os.system('start cmd /K python QBASIC.py validAccounts.txt transactionSummary/transactionSummary1.txt')
+    os.system('start cmd /K python QBASIC.py validAccounts.txt transactionSummary/transactionSummary2.txt')
+    print("Hit 'Enter' to begin end of day processing...")
+    input()
     mergeTransactions()
     # Run back office on mergedTransactionSummary.txt
     os.system('python QBASIC_Backend.py masterAccounts.txt mergedTransactionSummary.txt')
+    clearTransactionSummary(os.path.join(sys.path[0], 'transactionSummary/transactionSummary0.txt'))
+    clearTransactionSummary(os.path.join(sys.path[0], 'transactionSummary/transactionSummary1.txt'))
+    clearTransactionSummary(os.path.join(sys.path[0], 'transactionSummary/transactionSummary2.txt'))
+
+def clearTransactionSummary(filePath):
+    open(filePath, 'w').close()
 
 def mergeTransactions():
     mergedTransactions = []

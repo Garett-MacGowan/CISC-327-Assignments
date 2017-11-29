@@ -145,15 +145,15 @@ def createacct(accountsFile):
 	while (check2 == False):
 		name = input("Enter a name for the account:")
 		if (((len(name)) < 3) or ((len(name)) > 30)):
-			print("t")
+			print("The name must be within 3 and 30 characters long.")
 		elif (((str(name))[0] == " ") or ((str(name))[(len(name)-1)] == " ")):
 			print("The name cannot begin or end with a space.")
-		elif (name.isalnum() == False):
+		elif (all(x.isalnum() or x == ' ' for x in name) == False):
 			print("The name must be made up of alphanumeric characters only.")
 		else:
 			check2 = True
 	# Create a string for a line in the transaction summary file.
-	transactionLine = "NEW " + number + " " + name
+	transactionLine = "NEW " + number + " 000" + " 0000000 " + name
 	return transactionLine
 
 # This function first asks the user for an account number. It then checks to see if that number is valid (it's in the 
@@ -170,7 +170,7 @@ def deleteacct(accountsFile):
 			print("Cannot find that account in our system.")
 	name = input("Enter the name of the account:")
 	# Create a string for a line in the transaction summary file.
-	transactionLine = "DEL " + number + " " + name
+	transactionLine = "DEL " + number + " 000" + " 0000000 " + name
 	return transactionLine
 
 # This function asks for an account number to deposit to and checks to see if it is valid (its in the account file). It 
@@ -200,7 +200,7 @@ def deposit(sessionType, accountsFile):
 		else:
 			check2 = True
 	# Create a string for a line in the transaction summary file.
-	transactionLine = "DEP " + number + " " + amount
+	transactionLine = "DEP " + number + " " + amount + " 0000000 " + "***"
 	return transactionLine
 
 # checkSessionLimit checks to make sure that no more than $1000 has been withdrawn from a particular account during the
@@ -248,7 +248,7 @@ def withdraw(sessionType, accountsFile, sessionTransactionSummaryFile):
 		else:
 			check2 = True
 	# Create a string for a line in the transaction summary file.
-	transactionLine = "WDR " + number + " " + amount
+	transactionLine = "WDR " + number + " " + amount + " 0000000 " + "***"
 	return transactionLine
 
 # This function asks the user to input two account numbers and checks if they are valid (are in the accounts file). It
@@ -284,7 +284,7 @@ def transfer(sessionType, accountsFile):
 		else:
 			check3 = True
 	# Create a string for a line in the transaction summary file.
-	transactionLine = "XFR " + number1 + " " + amount + " " + number2
+	transactionLine = "XFR " + number1 + " " + amount + " " + number2 + " ***"
 	return transactionLine
 
 # logout handles writing the new daily transaction summary file so that it may be used by the backend.

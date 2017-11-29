@@ -18,8 +18,8 @@ def main():
     # Read the master accounts file and transaction summary files into lists.
     masterAccounts = readMasterAccounts(os.path.join(sys.path[0], sys.argv[1]))
     transactionSummary = readTransactionSummary(os.path.join(sys.path[0], sys.argv[2]))
-    print(masterAccounts)
-    print(transactionSummary)
+    #print(masterAccounts)
+    #print(transactionSummary)
     # Loop through the transactions in the transaction summary list and apply them to the master accounts list
     for index in range(0, len(transactionSummary)):
         transaction = transactionSummary[index][0]
@@ -109,7 +109,7 @@ def newAccHandler(masterAccounts, accountNum, accountName):
             return masterAccounts
     for index in range(0, len(masterAccounts)):
         if (int(masterAccounts[index][0]) > int(accountNum)):
-            masterAccounts.insert(index-1, [accountNum, "0", accountName])
+            masterAccounts.insert(index, [accountNum, "0", accountName])
             return masterAccounts
         if (index == len(masterAccounts) - 1):
             masterAccounts.append([accountNum, "0", accountName])
@@ -136,6 +136,7 @@ def deleteAccHandler(masterAccounts, accountNum, accountName):
 # writeMasterAccounts handles writing the new master accounts file as a .txt document, where the name and path of the document is defined in main. 
 def writeMasterAccounts(masterAccounts, filePath):
     try:
+       open(filePath, 'w').close()
        file = open(filePath, 'w')
     except IOError:
         print("Cannot open " + filePath)
